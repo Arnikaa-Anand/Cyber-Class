@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <title>Cyber Class</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --main-color: #4CBB17;
+            --color-dark: #228B22;
+            --text-grey: #8390A2;
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+            list-style-type: none;
+            box-sizing: border-box;
+        }
+
+        #sidebar-toggle {
+            display: none;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 240px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            background: var(--main-color);
+            color: #fff;
+            overflow-y: auto;
+            transition: width 500ms;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            padding: 0rem 1rem;
+        }
+
+        .sidebar-menu {
+            padding: 2rem;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .sidebar li {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar a {
+            color: #fff;
+            font-size: .8rem;
+        }
+
+        .sidebar a span:last-child {
+            padding-left: .6rem;
+        }
+
+        #sidebar-toggle:checked~.sidebar {
+            width: 60px;
+        }
+
+        #sidebar-toggle:checked~.sidebar .sidebar-header h3 span,
+        #sidebar-toggle:checked~.sidebar li span:last-child {
+            display: none;
+        }
+
+        #sidebar-toggle:checked~.sidebar .sidebar-header,
+        #sidebar-toggle:checked~.sidebar li {
+            display: flex;
+            justify-content: center;
+        }
+
+        #sidebar-toggle:checked~.main-content {
+            margin-left: 60px;
+        }
+
+        #sidebar-toggle:checked~.main-content header {
+            left: 60px;
+            width: calc(100% - 60px);
+        }
+
+        .main-content {
+            position: relative;
+            margin-left: 240px;
+            transition: margin-left 500ms;
+        }
+
+        header {
+            position: fixed;
+            left: 240px;
+            top: 0;
+            z-index: 100;
+            width: calc(100% - 240px);
+            background: #fff;
+            height: 60px;
+            padding: 0rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #ccc;
+            transition: left 500ms;
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-wrapper input {
+            border: 0;
+            outline: 0;
+            padding: 1rem;
+            height: 38px;
+        }
+
+        .social-icons {
+            display: flex;
+            align-items: center;
+        }
+
+        .social-icons span,
+        .social-icons div {
+            margin-left: 1.2rem;
+        }
+
+        .social-icons div {
+            height: 38px;
+            width: 38px;
+            border-radius: 50%;
+        }
+
+        main {
+            margin-top: 60px;
+            background: #f1f5f9;
+            min-height: 90vh;
+            padding: 1rem 3rem;
+        }
+
+        .dash-title {
+            color: var(--color-dark);
+            margin-bottom: 1rem;
+        }
+
+        .dash-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-column-gap: 3rem;
+        }
+
+        .card-single {
+            background: #fff;
+            border-radius: 7px;
+            box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-body {
+            padding: 1.3rem 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-body span {
+            font-size: 1.5rem;
+            color: #777;
+            padding-right: 1.4rem;
+        }
+
+        .card-body h5 {
+            color: var(--text-grey);
+            font-size: 1rem;
+        }
+
+        .card-body h4 {
+            color: var(--color-dark);
+            font-size: 1.1rem;
+            margin-top: .2rem;
+        }
+
+        .card-footer {
+            padding: .2rem 1rem;
+            background: #f9fafc;
+        }
+
+        .card-footer a {
+            color: var(--main-color);
+        }
+
+        .recent {
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: 75% 25%;
+            grid-column-gap: 1.5rem;
+        }
+
+        .activity-card,
+        .summary-card,
+        .bday-card {
+            background: #fff;
+            border-radius: 7px;
+        }
+
+        .activity-card h3 {
+            color: var(--text-grey);
+            margin: 1rem;
+        }
+
+        .activity-card table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .activity-card thead {
+            background: #efefef;
+            text-align: left;
+        }
+
+        th,
+        td {
+            font-size: .9rem;
+            padding: 1rem 1rem;
+            color: var(--color-dark);
+        }
+
+        td {
+            font-size: .8rem;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f9fafc;
+        }
+
+        .badge {
+            padding: .2rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: .7rem;
+        }
+
+        .badge.success {
+            background: #DEF7EC;
+            color: var(--main-color);
+        }
+
+        .badge.warning {
+            background: #F0F6B2;
+            color: orange;
+        }
+
+        .dropbtn {
+            background-color: #4CBB17;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+
+        .td-team {
+            display: flex;
+            align-items: center;
+        }
+
+        .img-1,
+        .img-2,
+        .img-3 {
+            height: 38px;
+            width: 38px;
+            border-radius: 50%;
+            margin-left: -15px;
+            border: 3px solid #efefef;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .img-2 {
+            background-image: url(img/2.jpg);
+        }
+
+        .img-3 {
+            background-image: url(img/3.jpeg);
+        }
+
+        .ble {
+            width: 272px;
+            padding: 10px;
+            border: 5px solid rgb(184, 180, 180);
+            margin: 0;
+            height: 150px;
+        }
+
+        .summary-card {
+            margin-bottom: 1.5rem;
+            padding-top: .5rem;
+            padding-bottom: .5rem;
+        }
+
+        .summary-single {
+            padding: .5rem 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .summary-single span {
+            font-size: 1.5rem;
+            color: #777;
+            padding-right: 1rem;
+        }
+
+        .summary-single h5 {
+            color: var(--main-color);
+            font-size: 1.1rem;
+            margin-bottom: 0rem !important;
+        }
+
+        .summary-single small {
+            font-weight: 700;
+            color: var(--text-grey);
+        }
+
+        .bday-flex {
+            display: flex;
+            align-items: center;
+            margin-bottom: .3rem;
+        }
+
+        .bday-card {
+            padding: 1rem;
+        }
+
+        .bday-img {
+            height: 60px;
+            width: 60px;
+            border-radius: 50%;
+            border: 3px solid #efefef;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-image: url(img/3.jpeg);
+            margin-right: .7rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-center button {
+            background: var(--main-color);
+            color: #fff;
+            border: 1px solid var(--main-color);
+            border-radius: 4px;
+            padding: .4rem 1rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        @media only screen and (max-width: 1200px) {
+            .sidebar {
+                width: 60px;
+                z-index: 150;
+            }
+
+            .sidebar .sidebar-header h3 span,
+            .sidebar li span:last-child {
+                display: none;
+            }
+
+            .sidebar .sidebar-header,
+            .sidebar li {
+                display: flex;
+                justify-content: center;
+            }
+
+            .main-content {
+                margin-left: 60px;
+            }
+
+            .main-content header {
+                left: 60px;
+                width: calc(100% - 60px);
+            }
+
+            #sidebar-toggle:checked~.sidebar {
+                width: 240px;
+            }
+
+            #sidebar-toggle:checked~.sidebar .sidebar-header h3 span,
+            #sidebar-toggle:checked~.sidebar li span:last-child {
+                display: inline;
+            }
+
+            #sidebar-toggle:checked~.sidebar .sidebar-header {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            #sidebar-toggle:checked~.sidebar li {
+                display: block;
+            }
+
+            #sidebar-toggle:checked~.main-content {
+                margin-left: 60px;
+            }
+
+            #sidebar-toggle:checked~.main-content header {
+                left: 60px;
+            }
+        }
+
+        @media only screen and (max-width: 860px) {
+            .dash-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .card-single {
+                margin-bottom: 1rem;
+            }
+
+            .activity-grid {
+                display: block;
+            }
+
+            .summary {
+                margin-top: 1.5rem;
+            }
+        }
+
+        @media only screen and (max-width: 600px) {
+            .dash-cards {
+                grid-template-columns: 100%;
+            }
+        }
+
+        @media only screen and (max-width: 450px) {
+            main {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        body {
+            font-family: Verdana, sans-serif;
+        }
+
+        /* Month header */
+        .month {
+            padding: 65px 26px;
+            width: 100%;
+            background: white;
+            text-align: center;
+        }
+
+        /* Month list */
+        .month ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        .month ul li {
+            color: white;
+            font-size: 22px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        /* Previous button inside month header */
+        .month .prev {
+            float: left;
+            padding-top: 9px;
+        }
+
+        /* Next button */
+        .month .next {
+            float: right;
+            padding-top: 9px;
+        }
+
+        /* Weekdays (Mon-Sun) */
+        .weekdays {
+            margin: 0;
+            padding: 9px 0;
+            background-color: rgb(243, 239, 239);
+        }
+
+        .weekdays li {
+            display: inline-block;
+            width: 14%;
+            color: rgb(112, 110, 110);
+            text-align: center;
+        }
+
+        /* Days (1-31) */
+        .days {
+            padding: 8px 0;
+            background: rgb(209, 208, 208);
+            margin: 0;
+        }
+
+        .days li {
+            list-style-type: none;
+            display: inline-block;
+            width: 14%;
+            text-align: center;
+            margin-bottom: 7px;
+            font-size: 14px;
+            color: rgb(100, 99, 99);
+        }
+
+        /* Highlight the "current" day */
+        .days li .active {
+            padding: 7px;
+            background: white;
+            color: black !important
+        }
+    </style>
+</head>
+
+<body>
+
+    <input type="checkbox" id="sidebar-toggle">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3 class="brand">
+                <span class="ti-unlink"></span>
+                <span>Cyber Class</span>
+            </h3>
+            <label for="sidebar-toggle" class="ti-menu-alt"></label>
+        </div>
+
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <a href="{{ url_for('dashboard') }}">
+                        <span class="ti-home"></span>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/dashboard/subjects">
+                        <span class="ti-face-smile"></span>
+                        <span>Subjects</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/dashboard/assignments">
+                        <span class="ti-agenda"></span>
+                        <span>Assignments</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/dashboard/tests">
+                        <span class="ti-agenda"></span>
+                        <span>Tests</span>
+                    </a>
+                </li>
+
+
+                </li>
+                <li>
+                    <a href="/dashboard/calendar">
+                        <span class="ti-time"></span>
+                        <span>Calendar</span>
+                    </a>
+                </li>
+
+                </li>
+                <li>
+                    <a href="/dashboard/account">
+                        <span class="ti-settings"></span>
+                        <span>Account</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="main-content">
+
+        <header>
+            <div class="search-wrapper">
+                <span class="ti-search"></span>
+                <input type="search" placeholder="Search">
+            </div>
+
+            <div class="social-icons">
+                <span class="ti-bell"></span>
+                <span class="ti-comment"></span>
+                <div style="position:absolute; left: 936px; top:10px;">
+                    <div class="dropdown">
+                        <button class="dropbtn">Dropdown</button>
+                        <div class="dropdown-content">
+                            <a href="/dashboard/account">Account</a>
+                            <a href="/user/signout">Log out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+
+            <h2 class="dash-title">Overview</h2>
+
+            <div class="dash-cards">
+
+                <div class="card-single">
+                    <div class="card-body">
+                        <span class="ti-reload"></span>
+                        <div>
+                            <h5>Assignments Pending</h5>
+                            <h4>2</h4>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/dashboard/assignments/viewall">View all</a>
+                    </div>
+                </div>
+
+                <div class="card-single">
+                    <div class="card-body">
+                        <span class="ti-reload"></span>
+                        <div>
+                            <h5>Assignments Completed</h5>
+                            <h4>2</h4>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/dashboard/assignments/viewall">View all</a>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <section class="recent">
+                <div class="activity-grid">
+                    <div class="ble">
+                        <h4>Announcements</h4>
+                        <div class="bday-flex">
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <div class="bday-info">
+                                <h5>New assignment posted</h5>
+                                <br>
+
+                                <h5>Quiz Tomorrow</h5>
+                            </div>
+                        </div>
+
+                        <br>
+                        <div class="text-center">
+                            <button>
+                                <span class="ti-gift"></span>
+                                View all
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>
